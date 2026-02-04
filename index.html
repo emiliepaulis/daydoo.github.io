@@ -1,1 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daydoo — Daily goals, made simple</title>
+  <meta name="description" content="Daydoo helps you track daily goals, keep streaks, and stay accountable with friends — with flexible planning and smart reminders." />
+  <meta name="theme-color" content="#1F2A44" />
 
+  <style>
+    :root{
+      --midnight:#1F2A44; /* primary */
+      --mint:#6ED3C8;     /* accent */
+      --ivory:#FAF9F6;    /* background */
+      --text:#101828;
+      --muted:#667085;
+      --card:#FFFFFF;
+      --border:rgba(16,24,40,.10);
+      --shadow:0 12px 30px rgba(16,24,40,.12);
+      --radius:18px;
+      --max:1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:linear-gradient(180deg, var(--midnight) 0%, var(--midnight) 58%, var(--ivory) 58%, var(--ivory) 100%);
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 70px;}
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 0 24px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      color:var(--ivory); text-decoration:none;
+      font-weight:700; letter-spacing:.2px;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:999px;background:var(--mint);
+      box-shadow:0 0 0 6px rgba(110,211,200,.18);
+    }
+    .navlinks{display:flex; gap:16px; font-size:14px;}
+    .navlinks a{color:rgba(250,249,246,.86); text-decoration:none}
+    .navlinks a:hover{color:var(--ivory)}
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:26px;
+      align-items:stretch;
+      margin-top:6px;
+    }
+    @media (max-width: 920px){
+      .hero{grid-template-columns: 1fr; gap:18px;}
+      .navlinks{display:none;}
+    }
+    .heroLeft{
+      color:var(--ivory);
+      padding:22px 0 10px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(250,249,246,.10);
+      border:1px solid rgba(250,249,246,.14);
+      font-size:13px;
+      color:rgba(250,249,246,.92);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:44px;
+      line-height:1.06;
+      letter-spacing:-.8px;
+    }
+    @media (max-width: 520px){ h1{font-size:36px;} }
+    .sub{
+      margin:0 0 18px;
+      color:rgba(250,249,246,.88);
+      font-size:16px;
+      line-height:1.55;
+      max-width:52ch;
+    }
+    .ctaRow{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      font-size:14px;
+      text-decoration:none;
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+    }
+    .btnPrimary{
+      background:var(--mint);
+      color:var(--midnight);
+      box-shadow:0 10px 22px rgba(110,211,200,.28);
+    }
+    .btnPrimary:hover{filter:brightness(.98)}
+    .btnGhost{
+      background:rgba(250,249,246,.10);
+      color:var(--ivory);
+      border:1px solid rgba(250,249,246,.18);
+    }
+    .btnGhost:hover{background:rgba(250,249,246,.14)}
+    .heroRight{
+      background:rgba(250,249,246,.10);
+      border:1px solid rgba(250,249,246,.16);
+      border-radius:var(--radius);
+      padding:16px;
+      color:var(--ivory);
+      box-shadow:0 18px 38px rgba(0,0,0,.22);
+      position:relative;
+      overflow:hidden;
+    }
+    .mockTop{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:6px 6px 10px;
+      font-size:13px;
+      color:rgba(250,249,246,.86);
+    }
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(110,211,200,.16);
+      border:1px solid rgba(110,211,200,.28);
+      color:rgba(250,249,246,.92);
+      font-weight:600;
+    }
+    .card{
+      background:rgba(250,249,246,.08);
+      border:1px solid rgba(250,249,246,.14);
+      border-radius:16px;
+      padding:14px;
+      margin:10px 0;
+    }
+    .row{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+    }
+    .goalTitle{font-weight:700}
+    .goalMeta{font-size:12px; color:rgba(250,249,246,.78); margin-top:4px}
+    .tick{
+      width:30px; height:30px; border-radius:10px;
+      background:rgba(110,211,200,.22);
+      border:1px solid rgba(110,211,200,.32);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:900;
+      color:var(--ivory);
+      flex:0 0 auto;
+    }
+    .tick.off{
+      background:rgba(250,249,246,.06);
+      border:1px solid rgba(250,249,246,.14);
+      color:rgba(250,249,246,.60);
+    }
+
+    /* Sections below hero */
+    .below{
+      margin-top:54px;
+      background:var(--ivory);
+      border-radius:28px;
+      padding:34px 18px 10px;
+    }
+    .section{max-width:var(--max); margin:0 auto; padding:0 0 26px;}
+    .kicker{
+      color:var(--midnight);
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size:12px;
+      text-transform:uppercase;
+      opacity:.9;
+    }
+    .h2{
+      margin:8px 0 10px;
+      font-size:28px;
+      letter-spacing:-.4px;
+      color:var(--midnight);
+    }
+    .p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:70ch;
+      font-size:15px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr;} }
+    .feature{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 10px 26px rgba(16,24,40,.06);
+    }
+    .featureTitle{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      color:var(--midnight);
+      margin:2px 0 6px;
+    }
+    .icon{
+      width:36px;height:36px;border-radius:14px;
+      background:rgba(110,211,200,.22);
+      border:1px solid rgba(110,211,200,.40);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--midnight);
+      font-weight:900;
+    }
+    .featureDesc{margin:0;color:var(--muted);line-height:1.55;font-size:14px;}
+    .callout{
+      margin-top:22px;
+      background:linear-gradient(135deg, rgba(110,211,200,.26), rgba(31,42,68,.08));
+      border:1px solid rgba(31,42,68,.10);
+      border-radius:22px;
+      padding:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .callout strong{color:var(--midnight)}
+    .mini{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.45;
+      margin-top:4px;
+    }
+    footer{
+      padding:18px 0 40px;
+      color:rgba(31,42,68,.70);
+      font-size:13px;
+    }
+    .smalllinks a{color:rgba(31,42,68,.78); text-decoration:none; margin-right:12px;}
+    .smalllinks a:hover{text-decoration:underline;}
+    .hr{height:1px;background:rgba(31,42,68,.10); margin:24px 0 14px;}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <a class="brand" href="#">
+        <span class="dot"></span>
+        <span>Daydoo</span>
+      </a>
+      <div class="navlinks">
+        <a href="#features">Features</a>
+        <a href="#why">Why Daydoo</a>
+        <a href="#waitlist">Waitlist</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="heroLeft">
+        <div class="pill">All your daily goals — in one place</div>
+        <h1>Build consistency without juggling 5 apps.</h1>
+        <p class="sub">
+          Daydoo lets you pick your goals for the day, track streaks, and stay accountable with friends —
+          with flexible breaks and smart reminders.
+        </p>
+
+        <div class="ctaRow" id="waitlist">
+          <!-- Replace the # with your waitlist form later (Google Form / Typeform) -->
+          <a class="btn btnPrimary" href="#" onclick="alert('Add your waitlist link here (Google Form / Typeform).'); return false;">
+            Join the waitlist
+            <span aria-hidden="true">→</span>
+          </a>
+          <a class="btn btnGhost" href="#features">See features</a>
+        </div>
+
+        <p class="mini" style="margin-top:12px; color:rgba(250,249,246,.78);">
+          Students & young professionals • Health + productivity • Europe-first
+        </p>
+      </div>
+
+      <div class="heroRight" aria-label="App preview mockup">
+        <div class="mockTop">
+          <span>Today</span>
+          <span class="chip">Streaks</span>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="goalTitle">Drink water</div>
+              <div class="goalMeta">Target: 2.0 L • Reminder: 10:00</div>
+            </div>
+            <div class="tick">✓</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="goalTitle">Study</div>
+              <div class="goalMeta">Target: 2 hours • Reminder: 18:00</div>
+            </div>
+            <div class="tick off">○</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="goalTitle">Healthy meal</div>
+              <div class="goalMeta">Upload a photo • Reminder: 13:00</div>
+            </div>
+            <div class="tick off">○</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="goalTitle">Sleep before</div>
+              <div class="goalMeta">Target: 23:30 • Reminder: 23:00</div>
+            </div>
+            <div class="tick off">○</div>
+          </div>
+        </div>
+
+        <div class="mini" style="margin-top:10px; color:rgba(250,249,246,.72);">
+          Tip: add a friend to share a streak and stay consistent together.
+        </div>
+      </div>
+    </div>
+
+    <div class="below">
+      <div class="section" id="features">
+        <div class="kicker">Features</div>
+        <div class="h2">Everything you need to stay consistent</div>
+        <p class="p">
+          Customize daily goals, track streaks, and reduce friction — so planning your life doesn’t become a task itself.
+        </p>
+
+        <div class="grid">
+          <div class="feature">
+            <div class="featureTitle"><span class="icon">1</span>Daily goals</div>
+            <p class="featureDesc">Pick the goals you want to follow each day: water, study hours, steps, workouts, sleep, or healthy meals with photo uploads.</p>
+          </div>
+          <div class="feature">
+            <div class="featureTitle"><span class="icon">2</span>Streaks</div>
+            <p class="featureDesc">Keep momentum with streaks per goal. Missed days break streaks — planned breaks don’t.</p>
+          </div>
+          <div class="feature">
+            <div class="featureTitle"><span class="icon">3</span>Shared streaks</div>
+            <p class="featureDesc">Commit with friends to the same goal and stay accountable together through shared progress.</p>
+          </div>
+          <div class="feature">
+            <div class="featureTitle"><span class="icon">4</span>Vacation mode</div>
+            <p class="featureDesc">Plan breaks in advance (travel, exams, holidays). Goals pause without punishing your streaks.</p>
+          </div>
+          <div class="feature">
+            <div class="featureTitle"><span class="icon">5</span>Smart reminders</div>
+            <p class="featureDesc">Set a custom time for each goal. Get gentle nudges exactly when you need them.</p>
+          </div>
+          <div class="feature">
+            <div class="featureTitle"><span class="icon">6</span>Low friction</div>
+            <p class="featureDesc">One place for correlated goals — no more switching between multiple apps to stay on track.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="why">
+        <div class="kicker">Why Daydoo</div>
+        <div class="h2">Designed for people who want structure — not rigidity</div>
+        <p class="p">
+          Daydoo is built for students and young professionals who are health-oriented, but overwhelmed by planning
+          and inconsistent tools. Choose what matters today, stay consistent over time, and use friends for accountability.
+        </p>
+
+        <div class="callout">
+          <div>
+            <strong>Coming soon:</strong> a simple character that reflects your consistency (keep it “alive” by completing your goals).
+            <div class="mini">Optional gamification — motivating, not childish.</div>
+          </div>
+          <a class="btn btnPrimary" href="#waitlist">Join the waitlist →</a>
+        </div>
+
+        <div class="hr"></div>
+
+        <footer>
+          <div class="smalllinks">
+            <a href="#" onclick="alert('Add your email or social link here.'); return false;">Contact</a>
+            <a href="#" onclick="alert('Add your privacy policy link here.'); return false;">Privacy</a>
+          </div>
+          <div style="margin-top:10px;">© <span id="y"></span> Daydoo. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
